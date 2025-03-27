@@ -33,8 +33,8 @@ export default {
         'shade-orange': '#FF3D00',
       },
       boxShadow: {
-        'dark': '0px 4px 6px rgba(31, 41, 55, 0.15)', // dark shadow color
-        'light': '0px 4px 6px rgba(255, 255, 255, 0.2)', // light shadow color
+        'dark': '0px 4px 6px rgba(31, 41, 55, 0.15)', 
+        'light': '0px 4px 6px rgba(255, 255, 255, 0.2)', 
       },
     },
   },

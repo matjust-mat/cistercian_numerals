@@ -6,19 +6,8 @@ import ThemeToggle from "./themeToggle";
 export default function Header() {
   return (
     <header className="flex justify-between items-center p-4 bg-light-white dark:bg-dark-black">
-      <h1 className="text-blue dark:text-light-blue">V-KeyBoard</h1>
-      <h2 className="font-bold">USERNAME</h2>
+      <h1 className="text-blue dark:text-light-blue font-bold text-2xl flex justify-center w-full ml-16 italic">Aviadador 2000</h1>
       <div className="flex justify-between items-center gap-5">
-        <Button
-          size="sm"
-          radius="lg"
-          color="danger"
-          variant="flat"
-          onPress={()=>alert("Logged out!")}
-          className="font-medium"
-        >
-          Log out
-        </Button>
         <ThemeToggle />
       </div>
     </header>
