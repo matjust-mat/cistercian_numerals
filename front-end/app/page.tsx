@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Converter, Header, Swicther } from '@/components';
+import { ImageProvider } from '@/context/ImageContext';
+import { NumberProvider } from '@/context/NumberContext';
 
 export default function Home() {
   const [method, setMethod] = useState<string>('aviadar');
@@ -14,10 +16,14 @@ export default function Home() {
   return (
     <>
       <Header />
-      <div className="bg-off-white w-full h-full dark:bg-shade-black flex flex-col items-center">
-        <Swicther changeMethod={handleChangeMethods} />
-        <Converter method={method} />
-      </div>
+      <ImageProvider>
+        <NumberProvider>
+          <div className="bg-off-white w-full h-full dark:bg-shade-black flex flex-col items-center">
+            <Swicther changeMethod={handleChangeMethods} />
+            <Converter method={method} />
+          </div>
+        </NumberProvider>
+      </ImageProvider>
     </>
   );
 }

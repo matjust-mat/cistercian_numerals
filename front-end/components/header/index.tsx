@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@heroui/button";
 import ThemeToggle from "./themeToggle";
 
 export default function Header() {

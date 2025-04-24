@@ -2,14 +2,37 @@
 
 import { useState } from 'react';
 import { Button, ButtonGroup } from '@heroui/button';
+import { useImageContext, useNumberContext } from '@/context';
 
 interface SwictherRefProps {
   changeMethod: (method: string) => void;
 }
 
 export default function Swicther({changeMethod}: SwictherRefProps) {
+  const {
+    setInputValue,
+    setFetchedValue,
+    setIsLoadingNumber,
+  } = useNumberContext();
+  const { 
+    setSelectedImage, 
+    setPreviewUrl, 
+    setFetchedImageUrl, 
+    setIsLoadingImage 
+  } = useImageContext();
+
   const [firstActive, setFirstActive] = useState<boolean>(true);
   const [secondActive, setSecondActive] = useState<boolean>(false);
+
+  const resetStates = () => {
+    setInputValue('');
+    setFetchedValue(null);
+    setIsLoadingNumber(false);
+    setSelectedImage(null);
+    setPreviewUrl(null);
+    setFetchedImageUrl(null);
+    setIsLoadingImage(false);
+  };
 
   return (
     <div className="w-full flex justify-center h-fit p-7">
@@ -23,6 +46,7 @@ export default function Swicther({changeMethod}: SwictherRefProps) {
           } text-white font-medium`}
           onPress={() => {
             if (firstActive) return;
+            resetStates();
             setFirstActive(true);
             setSecondActive(false);
             changeMethod('aviadar');
@@ -39,6 +63,7 @@ export default function Swicther({changeMethod}: SwictherRefProps) {
           } text-white font-medium`}
           onPress={() => {
             if (secondActive) return;
+            resetStates();
             setFirstActive(false);
             setSecondActive(true);
             changeMethod('desaviadar');

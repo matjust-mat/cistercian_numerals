@@ -9,7 +9,7 @@ interface ConverterProps {
 
 export default function Converter({ method }: ConverterProps) {
   return (
-    <div className="flex flex-row items-center justify-center w-full h-full">
+    <div className="flex flex-row items-center justify-center w-full h-full gap-16">
       {method === 'aviadar' ? (
         <>
         <Numbers from/>
