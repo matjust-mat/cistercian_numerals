@@ -48,6 +48,12 @@ export default function Numbers({ from, to }: NumbersProps) {
             type="number"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value || '')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && inputValue !== '' && Number(inputValue) < 10000) {
+                setIsLoadingNumber(true);
+                setTimeout(() => setIsLoadingNumber(false), 2000);
+              }
+            }}
             className="rounded-md focus:outline-none max-w-80"
             placeholder="Digite um número"
             min={0}
@@ -59,7 +65,7 @@ export default function Numbers({ from, to }: NumbersProps) {
               setTimeout(() => setIsLoadingNumber(false), 2000);
             }}
             isLoading={isLoadingNumber}
-            isDisabled={inputValue === ''}
+            isDisabled={inputValue === '' || Number(inputValue) >= 10000}
             disableRipple={true}
             size="lg"
             className="bg-tint-blue dark:bg-shade-blue mt-4"
