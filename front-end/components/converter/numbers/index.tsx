@@ -5,7 +5,7 @@ import { useImageContext } from '@/context/ImageContext';
 import { useNumberContext } from '@/context/NumberContext';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 interface NumbersProps {
   from?: boolean;
@@ -22,6 +22,8 @@ export default function Numbers({ from, to }: NumbersProps) {
     setIsLoadingNumber,
   } = useNumberContext();
   const { isLoadingImage } = useImageContext();
+
+  const isDisabled = inputValue === '' || Number(inputValue) >= 10000;
 
   useEffect(() => {
     if (isLoadingImage) {
@@ -44,6 +46,9 @@ export default function Numbers({ from, to }: NumbersProps) {
           <h2 className="text-4xl font-semibold dark:text-shade-gray text-white">
             Insira um número
           </h2>
+          {isDisabled && (<p>
+            Insira um número entre 1 e 9999 para lacrar.
+          </p>)}
           <Input
             type="number"
             value={inputValue}
@@ -56,7 +61,7 @@ export default function Numbers({ from, to }: NumbersProps) {
             }}
             className="rounded-md focus:outline-none max-w-80"
             placeholder="Digite um número"
-            min={0}
+            min={1}
             max={9999}
           />
           <Button
@@ -65,7 +70,7 @@ export default function Numbers({ from, to }: NumbersProps) {
               setTimeout(() => setIsLoadingNumber(false), 2000);
             }}
             isLoading={isLoadingNumber}
-            isDisabled={inputValue === '' || Number(inputValue) >= 10000}
+            isDisabled={isDisabled}
             disableRipple={true}
             size="lg"
             className="bg-tint-blue dark:bg-shade-blue mt-4"
