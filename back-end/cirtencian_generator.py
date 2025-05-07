@@ -83,7 +83,7 @@ class CirtencianGenerator:
 
         return base.convert("RGB")
 
-    def generate_all(self):
+    def generate_dataset(self):
         values_by_place = {
             0: list(range(1, 10)),
             1: list(range(10, 100, 10)),

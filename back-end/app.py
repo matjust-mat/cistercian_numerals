@@ -49,5 +49,5 @@ def convertToNumerical(num):
 if __name__ == "__main__":
     gen = CirtencianGenerator()
     os.makedirs(gen.base_dir, exist_ok=True)
-    gen.generate_all()
+    gen.generate_dataset()
     app.run(debug=True)
