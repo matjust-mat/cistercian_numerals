@@ -2,37 +2,17 @@
 
 import { useState } from 'react';
 import { Button, ButtonGroup } from '@heroui/button';
-import { useImageContext, useNumberContext } from '@/context';
+import { useAppContext } from '@/context';
 
-interface SwictherRefProps {
+interface SwitcherRefProps {
   changeMethod: (method: string) => void;
 }
 
-export default function Swicther({changeMethod}: SwictherRefProps) {
-  const {
-    setInputValue,
-    setFetchedValue,
-    setIsLoadingNumber,
-  } = useNumberContext();
-  const { 
-    setSelectedImage, 
-    setPreviewUrl, 
-    setFetchedImageUrl, 
-    setIsLoadingImage 
-  } = useImageContext();
+export default function Switcher({ changeMethod }: SwitcherRefProps) {
+  const { resetStates } = useAppContext();
 
   const [firstActive, setFirstActive] = useState<boolean>(true);
   const [secondActive, setSecondActive] = useState<boolean>(false);
-
-  const resetStates = () => {
-    setInputValue('');
-    setFetchedValue(null);
-    setIsLoadingNumber(false);
-    setSelectedImage(null);
-    setPreviewUrl(null);
-    setFetchedImageUrl(null);
-    setIsLoadingImage(false);
-  };
 
   return (
     <div className="w-full flex justify-center h-fit p-7">
@@ -74,4 +54,4 @@ export default function Swicther({changeMethod}: SwictherRefProps) {
       </ButtonGroup>
     </div>
   );
-};
+}

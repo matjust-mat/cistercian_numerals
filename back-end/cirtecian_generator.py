@@ -1,26 +1,8 @@
-#!/usr/bin/env python3
 import os
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageDraw
+from transforms import TRANSFORMS
 
-"""
-CirtencianGenerator
-
-Gera imagens de numerais cistercienses para cada casa decimal (unidades, dezenas, centenas, milhares),
-utilizando um único conjunto base de traços e aplicando transformações geométricas (espelhamento e inversão).
-
-Principais funcionalidades:
-- Suporta valores de 1 a 9999, organizados por casa decimal.
-- Salva as imagens em pastas estruturadas: 'units', 'tens', 'hundreds', 'thousands'.
-- Utiliza a biblioteca PIL para desenhar e aplicar transformações, evitando duplicação de dados.
-- Sempre desenha a barra vertical central (tronco) como base da numeração.
-- Permite renderizar dígitos isolados ou números completos compostos.
-
-Exemplo de uso:
-    gen = CirtencianGenerator()
-    img = gen.draw_number(1583)
-    img.show()
-"""
-class CirtencianGenerator:
+class CistercianGenerator:
     def __init__(self, output_dir=None, img_size=100, line_width=2):
         self.img_size = img_size
         self.line_width = line_width
@@ -29,7 +11,7 @@ class CirtencianGenerator:
             self.base_dir = output_dir
         else:
             base = os.path.dirname(__file__)
-            self.base_dir = os.path.join(base, 'img', 'data')
+            self.base_dir = os.path.join(base, '..', 'img', 'data')
 
         self.place_dirs = {
             0: os.path.join(self.base_dir, 'units'),
@@ -40,6 +22,8 @@ class CirtencianGenerator:
 
         for d in self.place_dirs.values():
             os.makedirs(d, exist_ok=True)
+
+        self.transforms = TRANSFORMS
 
         self.unit_coords = [ 
             [(50,10),(70,10)],
@@ -53,24 +37,17 @@ class CirtencianGenerator:
             [(50,10),(70,10),(70,30),(50,30)]
         ]
 
-        self.transforms = {
-            0: lambda img: ImageOps.mirror(ImageOps.flip(img)),  # thousands
-            1: lambda img: ImageOps.flip(img),                   # hundreds
-            2: lambda img: ImageOps.mirror(img),                 # tens
-            3: lambda img: img                                   # units
-        }
-
     def draw_base_digit(self, digit: int):
         coords = self.unit_coords[digit - 1]
-        img = Image.new("RGBA", (self.img_size, self.img_size), (255, 255, 255, 0))  # transparent
+        img = Image.new("RGBA", (self.img_size, self.img_size), (255, 255, 255, 0))
         draw = ImageDraw.Draw(img)
         draw.line(coords, fill="black", width=self.line_width, joint="curve")
         return img
 
     def draw_number(self, number: int):
-        base = Image.new("RGBA", (self.img_size, self.img_size), (255, 255, 255, 255))  # white base
+        base = Image.new("RGBA", (self.img_size, self.img_size), (255, 255, 255, 255))
         draw = ImageDraw.Draw(base)
-        draw.line([(50, 10), (50, 90)], fill="black", width=self.line_width)  # center bar
+        draw.line([(50, 10), (50, 90)], fill="black", width=self.line_width)
 
         digits = str(number).zfill(4)
         for i in range(4):
@@ -103,3 +80,17 @@ class CirtencianGenerator:
                 img.save(path)
                 print(f"Generated {path}")
 
+    def get_existing_image_path(self, number: int):
+        if not (1 <= number <= 9999):
+            return None
+        magnitude = len(str(number)) - 1
+        folder = self.place_dirs.get(magnitude)
+        if not folder:
+            return None
+
+        filename = f"{number}.png"
+        full_path = os.path.join(folder, filename)
+        if os.path.exists(full_path):
+            return os.path.relpath(full_path, self.base_dir), full_path
+
+        return None

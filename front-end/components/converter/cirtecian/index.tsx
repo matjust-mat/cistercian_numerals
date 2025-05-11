@@ -1,8 +1,7 @@
 'use client';
 
 import Loading from '@/components/Loading';
-import { useImageContext } from '@/context/ImageContext';
-import { useNumberContext } from '@/context/NumberContext';
+import { useAppContext } from '@/context';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { TrashIcon } from 'lucide-react';
@@ -14,39 +13,45 @@ interface CirtecianProps {
 }
 
 export default function Cirtecian({ from, to }: CirtecianProps) {
+  const { isLoading, setIsLoading, setFetchedNumber, fetchedImage } =
+    useAppContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const {
-    selectedImage,
-    setSelectedImage,
-    previewUrl,
-    setPreviewUrl,
-    fetchedImageUrl,
-    setFetchedImageUrl,
-    isLoadingImage,
-    setIsLoadingImage,
-  } = useImageContext();
-  const { isLoadingNumber, setFetchedValue } = useNumberContext();
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedImage) {
       const url = URL.createObjectURL(selectedImage);
       setPreviewUrl(url);
-      return () => URL.revokeObjectURL(url); 
+      return () => URL.revokeObjectURL(url);
     }
   }, [selectedImage]);
 
-  useEffect(() => {
-    if (isLoadingNumber) {
-      const fetchImage = async () => {
-        setTimeout(() => {
-          setFetchedImageUrl(
-            'https://via.placeholder.com/100x100.png?text=Imagem+Carregada'
-          );
-        }, 2000);
-      };
-      fetchImage();
+  const fetchNumerical = async () => {
+    try {
+      setIsLoading(true);
+      await new Promise((res) => setTimeout(res, 1000));
+      const formData = new FormData();
+      formData.append('file', selectedImage as Blob);
+      const response = await fetch(
+        `http://localhost:5000/converter/to-number`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+      if (!response.ok) {
+        throw new Error('Failed to fetch number');
+      }
+      const data = await response.json();
+      setFetchedNumber(data);
+    } catch (error) {
+      console.error('Error fetching number:', error);
+      setFetchedNumber(null);
+    } finally {
+      setIsLoading(false);
     }
-  }, [isLoadingNumber]);
+  };
 
   return (
     <div className="min-w-[30rem] min-h-[30rem] mt-4 p-6 rounded-2xl dark:bg-orange-200 bg-orange-400 shadow-md flex flex-col justify-center items-center gap-10">
@@ -62,10 +67,10 @@ export default function Cirtecian({ from, to }: CirtecianProps) {
               accept=".png,.jpg,.jpeg"
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file && ['image/png', 'image/jpeg'].includes(file.type)) {
+                if (file && ['image/png'].includes(file.type)) {
                   setSelectedImage(file);
                 } else {
-                  alert('Apenas imagens PNG ou JPEG são permitidas.');
+                  alert('Apenas imagens PNG são permitidas.');
                   setSelectedImage(null);
                 }
               }}
@@ -76,8 +81,7 @@ export default function Cirtecian({ from, to }: CirtecianProps) {
                 onClick={() => {
                   setSelectedImage(null);
                   setPreviewUrl(null);
-                  setFetchedImageUrl(null);
-                  setFetchedValue(null);
+                  setFetchedNumber(null);
                   fileInputRef.current?.value &&
                     (fileInputRef.current.value = '');
                 }}
@@ -92,19 +96,13 @@ export default function Cirtecian({ from, to }: CirtecianProps) {
           )}
           <Button
             className="bg-tint-blue dark:bg-shade-blue mt-4"
-            onPress={() => {
-              setIsLoadingImage(true);
-              setTimeout(() => {
-                setIsLoadingImage(false);
-                alert('Imagem enviada! (simulado)');
-              }, 2000);
-            }}
+            onPress={fetchNumerical}
             disableRipple={true}
             size="lg"
             isDisabled={!selectedImage}
-            isLoading={isLoadingImage}
+            isLoading={isLoading}
           >
-            {isLoadingImage ? 'Removendo kit gay...' : 'Cura gay'}
+            {isLoading ? 'Removendo kit gay...' : 'Cura gay'}
           </Button>
         </>
       )}
@@ -114,14 +112,24 @@ export default function Cirtecian({ from, to }: CirtecianProps) {
           <h2 className="text-4xl font-semibold dark:text-shade-gray text-white">
             Valor cisterciense
           </h2>
-          {fetchedImageUrl ? (
-            <img
-              src={fetchedImageUrl}
-              alt="Imagem Recebida"
-              className="w-72 rounded-md border"
-            />
-          ) : isLoadingNumber ? (
-            <Loading text='Carregando imagem...' />
+          {isLoading ? (
+            <Loading text="Carregando imagem..." />
+          ) : fetchedImage?.image_url && fetchedImage?.filename ? (
+            <div>
+              <img
+                src={fetchedImage.image_url}
+                alt="Imagem Recebida"
+                className="w-72 rounded-md border"
+              />
+              <br />
+              <a
+                href={fetchedImage.image_url}
+                download={fetchedImage.filename}
+                className="text-white dark:text-shade-gray"
+              >
+                Download {fetchedImage.filename}
+              </a>
+            </div>
           ) : (
             <></>
           )}
