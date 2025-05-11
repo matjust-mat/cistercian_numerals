@@ -1,52 +1,62 @@
-# Projeto de teclado virtual
+# Aviadador 2000: Cistercian Numeral Converter
 
-Este projeto consiste numa primeira implementação sobre algoritmos avançados, se trata de uma tentativa de tornar o ato de acessar uma conta mais seguro, através de criptografia e etapas de validação mais complexas.
+**Aviadador 2000** is a full-stack application designed to bridge historical numeral notation and modern interfaces. It lets you **generate** Cistercian numeral images from standard base-10 numbers and **recognize** Cistercian numeral images back into their numeric form.
 
-## Tecnologias escolhidas
+---
 
-#### Front
+## 🎯 Mission & Context
 
-Para o *front-end* foram escolhidos:
-- Typescript
-- React (Nextjs 15)
-- Tailwindcss (4^)
-- Eslint
-- Prettier
-- HeroUI (antiga NextUI)
+Cistercian numerals date back to medieval Europe, offering a compact way to write any number from 1 to 9,999 using a single graphical symbol. This system is both elegant and intriguing, yet largely forgotten today.
 
-#### Back
+Aviadador 2000 revives this ancient notation for modern audiences, providing:
 
-Já para o *back-end* foram escolhidos:
-- Typescript
-- Nodejs (Nestjs)
-- Typeorm
-- SQLite
-- Prettier
-- Eslint
+- A **creative educational tool** for history enthusiasts and students
+- A **novel input method** for designers and hobbyists working with unconventional numeric systems
+- A playful **programming challenge** showcasing image generation and recognition techniques
 
-### Das decisões
+By combining Python, computer vision, Flask, Next.js, and React, the project demonstrates how to seamlessly integrate image processing and web technologies.
 
-React/Typescript/Next/Tailwind são meu "go-to" do font, eu adoro trabalhar com essas tecnologias e me sinto confortável codando nelas e por isso as escolhi.
-HeroUI veio como uma luva a calhar em minhas mãos, criando componentes rapidamente e sem tanto esforço, é legal que podemos importar componentes específicos ao invés de importar a lib inteira, o que mantém o controle sobre as dependências do projeto maior também.
+---
 
-No back foi onde me desafiei, nunca havia mexido com Node e Nest, apenas trabalhado com Python e principalmente Java para projetos de serviços e APIs. Como gosto da linguagem do javascript (especialmente cm o TS por cima) decidi dar uma chance para validar como seria programar em outra linguagem.
-Optei por Nest porque o logo é mais bonito que o logo do Express.js e porque soa como Next.
-Typeorm foi uma indicação do ChatGPT e SQLite foi uma opção prática e rápida para banco de dados.
+## 🌟 Key Features
 
-##### Sobre as tecnologias do serviço
+- **Generate Cistercian Images**: Enter any number (1–9,999) and receive a high-quality PNG of its Cistercian numeral.
+- **Recognize Uploaded Images**: Upload your own Cistercian numeral (hand‑drawn or machine‑generated) and get the corresponding numeric value.
+- **Bi-directional Conversion**: Switch effortlessly between “number → image” and “image → number” modes.
+- **Light/Dark Theme**: Frontend supports theme toggling for comfortable usage in any environment.
+- **Responsive Design**: Mobile‑friendly layout ensures a smooth experience across devices.
 
-Achei legal, mas honestamente ainda prefiro Java (não acredito que estou dizendo isso).
+---
 
-## Como rodar
+## 🔄 How It Works (High‑Level)
 
-Clone o projeto na sua máquina com o comando:<br>
-> `git clone https://github.com/ofofomat/virtual_keyboard.git`
+1. **Frontend (Next.js + React)**
 
+   - Provides a neat UI: input fields for numbers, file upload for images, and results display.
+   - Manages application state (loading, results) and theme preferences.
+   - Communicates with the backend via a simple REST API.
 
-Após isso, abra dois terminais, acesse a pasta `/virtual_keyboard` em ambos. Em um deles, siga o comando `cd back-end` para acessar a pasta dos serviços, no outro `cd front-end` para acessar a pasta das telas.
-<br>
-No primeiro, digite `npm run start` e no segundo `npm run dev`.
-<br>
-Abra o navegador e acesse o URL **http://localhost:3000** e você esterá na aplicação! Digite seu nome de usuário (*mock_user*) e digite sua senha (*4,6,7,3,4,9*). Clique em acessar e _TA DÃ_, você conseguiu! 😊
-<br>
-Caso queira brincar diretamente com os endpoints, acesse **http://localhost:9000**.
+2. **Backend (Flask + PIL + NumPy + scikit‑image)**
+
+   - **Generator**: Draws the four defining strokes for each digit, composites them along a central trunk, and saves templates.
+   - **Recognizer**: Pre‑loads templates, binarizes input images, splits them into quadrants, and uses SSIM (structural similarity) to match against known patterns.
+   - Ensures fast, reliable conversion in both directions.
+
+---
+
+## 🚀 Getting Started
+
+1. **Install & Run Backend**
+   See [README.md](./back-end/README.md) for Python setup and API details.
+2. **Install & Run Frontend**
+   See [README_FRONTEND.md](./front-end/README.md) for Node.js setup and UI instructions.
+
+---
+
+## 🤝 Why Use Aviadador 2000?
+
+- **Educational Value**: Visualize and interact with a piece of medieval mathematics.
+- **Creative Applications**: Integrate Cistercian numerals into art, games, or design projects.
+- **Technical Showcase**: Explore image composition, template matching, and modern web stacks in one cohesive project.
+
+Dive in, experiment with numbers old and new, and let Aviadador 2000 be your gateway to an ancient yet timeless numeral system!
