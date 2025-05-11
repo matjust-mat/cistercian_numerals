@@ -2,8 +2,8 @@ import os
 from flask import Flask, request, jsonify, abort, send_from_directory
 from flask_cors import CORS
 from PIL import Image
-from cirtecian_generator import CistercianGenerator
-from cirtencian_recognizer import CistercianRecognizer
+from generator.cirtecian_generator import CistercianGenerator
+from recognizer.cirtencian_recognizer import CistercianRecognizer
 
 app = Flask(__name__)
 CORS(app)

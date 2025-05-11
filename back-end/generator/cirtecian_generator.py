@@ -1,6 +1,6 @@
 import os
 from PIL import Image, ImageDraw
-from transforms import TRANSFORMS
+from shared.transforms import TRANSFORMS
 
 class CistercianGenerator:
     def __init__(self, output_dir=None, img_size=100, line_width=2):
