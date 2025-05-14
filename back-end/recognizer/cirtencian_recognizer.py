@@ -56,7 +56,6 @@ class CistercianRecognizer:
         Uses padding to maintain aspect ratio, then fixed quadrant splits.
         Raises ValueError if no valid digit is found.
         """
-        # Preprocess: pad to square, then binarize
         from PIL import ImageOps
         gray = input_img.convert('L')
         padded = ImageOps.pad(
@@ -68,7 +67,10 @@ class CistercianRecognizer:
         )
         bw_arr = self.binarize(padded)
 
-        # Fixed quadrant coordinates
+        ink_ratio = np.count_nonzero(bw_arr == 0) / (self.img_size * self.img_size)
+        if ink_ratio < 0.01 or ink_ratio > 0.2:
+            raise ValueError(f'Imagem fora do perfil visual de numeral cisterciense (ink ratio: {ink_ratio:.2f})')
+
         half = self.img_size // 2
         coords = {
             'tens':      (0, 0, half, half),
@@ -78,19 +80,17 @@ class CistercianRecognizer:
         }
 
         total = 0
-        found = False
+        matched_quadrants = 0
+
         for place, (x1, y1, x2, y2) in coords.items():
             region = bw_arr[y1:y2, x1:x2].copy()
 
-            # Mask trunk columns on right side
             if place in ('units', 'hundreds'):
                 region[:, :2] = 255
 
-            # Skip blank regions
             if np.count_nonzero(region == 0) < self.min_region_pixels:
                 continue
 
-            # Template matching
             best_score = -1.0
             best_digit = 0
             for digit, tmpl_arr in self.templates.get(place, []):
@@ -106,9 +106,9 @@ class CistercianRecognizer:
 
             if best_score >= self.ssim_threshold:
                 total += best_digit * (10 ** self.exponents[place])
-                found = True
+                matched_quadrants += 1
 
-        if not found:
-            raise ValueError('Nenhum dígito cisterciense reconhecido')
+        if matched_quadrants < 2:
+            raise ValueError('Imagem inválida: quadrantes insuficientes para ser considerado um numeral cisterciense')
 
         return total
